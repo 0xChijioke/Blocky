@@ -73,6 +73,12 @@ module.exports = {
       
       */
     },
+    skale: {
+      url: "https://eth-online.skalenodes.com/v1/hackathon-content-live-vega",
+      accounts: {
+        mnemonic: mnemonic(),
+      },
+    },
     rinkeby: {
       url: "https://rinkeby.infura.io/v3/460f40a260564ac4a4f4b3fffb032dad", // <---- YOUR INFURA ID! (or it won't work)
       //    url: "https://speedy-nodes-nyc.moralis.io/XXXXXXXXXXXXXXXXXXXXXXX/eth/rinkeby", // <---- YOUR MORALIS ID! (not limited to infura)
