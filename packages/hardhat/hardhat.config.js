@@ -75,9 +75,11 @@ module.exports = {
     },
     skale: {
       url: "https://eth-online.skalenodes.com/v1/hackathon-content-live-vega",
+      chainId: 0xf45db2a,
       accounts: {
         mnemonic: mnemonic(),
       },
+      allowUnlimitedContractSize: true,
     },
     rinkeby: {
       url: "https://rinkeby.infura.io/v3/460f40a260564ac4a4f4b3fffb032dad", // <---- YOUR INFURA ID! (or it won't work)
@@ -275,10 +277,10 @@ module.exports = {
   solidity: {
     compilers: [
       {
-        version: "0.8.4",
+        version: "0.8.5",
         settings: {
           optimizer: {
-            enabled: true,
+            enabled: false,
             runs: 200,
           },
         },
@@ -287,7 +289,7 @@ module.exports = {
         version: "0.6.7",
         settings: {
           optimizer: {
-            enabled: true,
+            enabled: false,
             runs: 200,
           },
         },
