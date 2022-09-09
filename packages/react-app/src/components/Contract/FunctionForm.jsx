@@ -7,7 +7,6 @@ import {
   Tooltip,
   InputGroup,
   InputRightAddon,
-  Stack,
   Grid,
   GridItem,
 } from "@chakra-ui/react";
@@ -33,9 +32,6 @@ export default function FunctionForm({ contractFunction, functionInfo, provider,
 
   const inputs = functionInfo.inputs.map((input, inputIndex) => {
     const key = getFunctionInputKey(functionInfo, input, inputIndex);
-    console.log(functionInfo);
-    console.log(input);
-    console.log(inputIndex);
 
     let buttons = "";
     if (input.type === "bytes32") {
