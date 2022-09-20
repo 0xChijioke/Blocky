@@ -7,7 +7,7 @@ import "@openzeppelin/contracts/utils/Counters.sol";
 import 'base64-sol/base64.sol';
 import "@openzeppelin/contracts/utils/Strings.sol";
 
-contract YourContract is ERC721URIStorage{
+contract Game is ERC721URIStorage {
 
     // using Counters for Counters.Counter;
     // Counters.Counter private _tokenIds;
@@ -17,7 +17,7 @@ contract YourContract is ERC721URIStorage{
     mapping(uint => uint) public last_tokenid;
 
 
-    constructor() ERC721("StrangeToken", "Strange") {
+    constructor() ERC721("DamageDealer", "DD") {
         last_tokenid[0] = 0;
         palette.push("blue");
         palette.push("red");
