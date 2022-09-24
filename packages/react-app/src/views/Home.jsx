@@ -1,9 +1,10 @@
 import { Container, Heading } from "@chakra-ui/react";
 import { useContractReader } from "eth-hooks";
 import { ethers } from "ethers";
-import { InputHandler, Player } from "../components";
+import { InputHandler, Player, Background } from "../components";
 import React from "react";
-import { player } from "../image";
+import { layer1, layer2, layer3, layer4, layer5, player } from "../image";
+
 
 /**
  * web3 props can be passed from '../App.jsx' into your local view component for use
@@ -19,19 +20,24 @@ function Home({ yourLocalBalance, readContracts }) {
     const canvas = document.getElementById("canvas1");
     const ctx = canvas.getContext("2d");
     canvas.width = window.innerWidth - 10;
-    canvas.height = 400;
+    canvas.height = 500;
 
     class Game {
       constructor(width, height) {
         this.width = width;
         this.height = height;
+        this.groundMargin = 80;
+        this.speed = 3;
+        this.background = new Background(this);
         this.player = new Player(this);
         this.input = new InputHandler();
       }
-      update() {
-        this.player.update(this.input.key);
+      update(deltaTime) {
+        this.background.update();
+        this.player.update(this.input.key, deltaTime);
       }
       draw(context) {
+        this.background.draw(context);
         this.player.draw(context);
       }
     }
@@ -43,7 +49,7 @@ function Home({ yourLocalBalance, readContracts }) {
       const deltaTime = timeStamp - lastTime;
       lastTime = timeStamp;
       ctx.clearRect(0, 0, canvas.width, canvas.height);
-      game.update();
+      game.update(deltaTime);
       game.draw(ctx);
       requestAnimationFrame(animate);
     }
@@ -61,6 +67,11 @@ function Home({ yourLocalBalance, readContracts }) {
         }}
       ></canvas>
       <img style={{ display: "none" }} id="player" alt="player" src={player}></img>
+      <img style={{ display: "none" }} id="layer1" alt="layer1" src={layer1}></img>
+      <img style={{ display: "none" }} id="layer2" alt="layer2" src={layer2}></img>
+      <img style={{ display: "none" }} id="layer3" alt="layer3" src={layer3}></img>
+      <img style={{ display: "none" }} id="layer4" alt="layer4" src={layer4}></img>
+      <img style={{ display: "none" }} id="layer5" alt="layer5" src={layer5}></img>
     </Container>
   );
 }

@@ -16,3 +16,4 @@ export { InputHandler } from "./InputHandler";
 export { default as FaucetHint } from "./FaucetHint";
 export { getFiles } from "./GetFiles";
 export { Player } from "./Player";
+export { Background } from "./Background";
