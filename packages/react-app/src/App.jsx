@@ -21,13 +21,14 @@ import {
   ThemeSwitch,
   //NetworkDisplay,
   FaucetHint,
+  getFiles,
   //NetworkSwitch,
 } from "./components";
-import { NETWORKS, ALCHEMY_KEY } from "./constants";
+import { NETWORKS, ALCHEMY_KEY, ADDRESS } from "./constants";
 import externalContracts from "./contracts/external_contracts";
 // contracts
 import deployedContracts from "./contracts/hardhat_contracts.json";
-import { Transactor, Web3ModalSetup } from "./helpers";
+import { Transactor, Upload, Web3ModalSetup } from "./helpers";
 import {
   Home,
   //ExampleUI,
@@ -247,6 +248,18 @@ function App(props) {
   }, [loadWeb3Modal]);
 
   const faucetAvailable = localProvider && localProvider.connection && targetNetwork.name.indexOf("local") !== -1;
+
+  let adr = "bB74aFcB19C571ebA23b3C2C9c999Bd1Bda4057C";
+  let addressFile = adr.toLowerCase();
+  console.log(addressFile);
+  // console.log(Upload());
+  async function run(){
+    let result = await getFiles(
+      `https://eth-online.skalenodes.com/v1/hackathon-content-live-vega/${addressFile}/Player.png`,
+    );
+    console.log("result: " + result);
+  }
+  run();
 
   return (
     <div className="App">

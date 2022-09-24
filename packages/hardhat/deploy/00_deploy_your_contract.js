@@ -17,20 +17,24 @@ module.exports = async ({ getNamedAccounts, deployments, getChainId }) => {
   const { deployer } = await getNamedAccounts();
   const chainId = await getChainId();
 
-  const blockToken = await deploy("BLOCKToken", {
+
+  const blockToken = await deploy("BlockToken", {
     from: deployer,
     args: ["BLOCK Token", "BLK"],
     log: true,
   });
 
-  // Getting a previously deployed contract
-  // const SmileAddr = await ethers.getContract("Smile", deployer);
+ 
 
   const blockGame = await deploy("BlockGame", {
     from: deployer,
     args: [blockToken.address],
     log: true,
   });
+
+
+
+ 
 
   // Getting a previously deployed contract
   // const BlockGame = await ethers.getContract("BlockGame", deployer);
