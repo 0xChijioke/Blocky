@@ -1,4 +1,4 @@
-import { Player } from "../image";
+import { player } from "../image";
 import { PRIVATE_KEY, ADDRESS } from "../constants";
 const Filestorage = require("@skalenetwork/filestorage.js");
 
@@ -13,7 +13,7 @@ export async function Upload(specificDirectory = "") {
   let account = ADDRESS;
 
   //get file data from file upload input field
-  let file = Player;
+  let file = player;
   let reader = new FileReader();
 
   //file path in account tree (dirA/file.name)
@@ -30,8 +30,7 @@ export async function Upload(specificDirectory = "") {
     const bytes = new Uint8Array(arrayBuffer);
     let link = filestorage.uploadFile(account, filePath, bytes, privateKey);
     console.log(link);
-    console.log(Player);
+    console.log(player);
   };
-  reader.readAsArrayBuffer(file);
-  console.log(reader.readAsArrayBuffer(file))
+  // reader.readAsArrayBuffer(file);
 }

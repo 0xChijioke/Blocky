@@ -1,4 +1,4 @@
-import { Box, Button, Flex, HStack, Stack, VStack } from "@chakra-ui/react";
+import { Box, Button, Flex, Heading, HStack, Stack, VStack } from "@chakra-ui/react";
 import {
   useBalance,
   useContractLoader,
@@ -249,17 +249,18 @@ function App(props) {
 
   const faucetAvailable = localProvider && localProvider.connection && targetNetwork.name.indexOf("local") !== -1;
 
-  let adr = "bB74aFcB19C571ebA23b3C2C9c999Bd1Bda4057C";
-  let addressFile = adr.toLowerCase();
-  console.log(addressFile);
-  // console.log(Upload());
-  async function run(){
-    let result = await getFiles(
-      `https://eth-online.skalenodes.com/v1/hackathon-content-live-vega/${addressFile}/Player.png`,
-    );
-    console.log("result: " + result);
-  }
-  run();
+  // let adr = "bB74aFcB19C571ebA23b3C2C9c999Bd1Bda4057C";
+  // let addressFile = adr.toLowerCase();
+  // console.log(addressFile);
+  // async function run() {
+  //   let upload = await Upload();
+  //   console.log(upload);
+  //   // let result = await getFiles(
+  //   //   `https://eth-online.skalenodes.com/v1/hackathon-content-live-vega/${addressFile}/Player.png`,
+  //   // );
+  //   // console.log("result: " + result);
+  // }
+  // run();
 
   return (
     <div className="App">
@@ -303,42 +304,23 @@ function App(props) {
         logoutOfWeb3Modal={logoutOfWeb3Modal}
         USE_NETWORK_SELECTOR={USE_NETWORK_SELECTOR}
       /> */}
-      {/* <Menu style={{ textAlign: "center", marginTop: 20 }} selectedKeys={[location.pathname]} mode="horizontal">
-        <Menu.Item key="/">
-          <Link to="/">App Home</Link>
-        </Menu.Item>
-        <Menu.Item key="/debug">
-          <Link to="/debug">Debug Contracts</Link>
-        </Menu.Item>
-        <Menu.Item key="/hints">
-          <Link to="/hints">Hints</Link>
-        </Menu.Item>
-        <Menu.Item key="/exampleui">
-          <Link to="/exampleui">ExampleUI</Link>
-        </Menu.Item>
-        <Menu.Item key="/mainnetdai">
-          <Link to="/mainnetdai">Mainnet DAI</Link>
-        </Menu.Item>
-        <Menu.Item key="/subgraph">
-          <Link to="/subgraph">Subgraph</Link>
-        </Menu.Item>
-      </Menu> */}
-      <Stack direction={"row"} align={"center"} justify={"center"} spacing={77}>
-        <Link to={"/"}>Home</Link>
-        <Link to={"/debug"}>Debug</Link>
-      </Stack>
 
       <Switch>
         <Route exact path="/">
           {/* pass in any web3 props to this Home component. For example, yourLocalBalance */}
-          <Home yourLocalBalance={yourLocalBalance} readContracts={readContracts} />
+          <>
+            <Heading position={"absolute"} top={"50%"} w={"100%"} id="loading">
+              LOADING...
+            </Heading>
+            <Home yourLocalBalance={yourLocalBalance} readContracts={readContracts} />
+          </>
         </Route>
 
         <Route exact path="/debug">
           {/* 🎛 this scaffolding is full of commonly used components this <Contract /> component will automatically parse
           your ABI and give you a form to interact with it locally */}
           <Contract
-            name="YourContract"
+            name="BlockGame"
             price={price}
             signer={userSigner}
             provider={localProvider}

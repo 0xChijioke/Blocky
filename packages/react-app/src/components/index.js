@@ -15,3 +15,4 @@ export { default as ThemeSwitch } from "./ThemeSwitch";
 export { InputHandler } from "./InputHandler";
 export { default as FaucetHint } from "./FaucetHint";
 export { getFiles } from "./GetFiles";
+export { Player } from "./Player";

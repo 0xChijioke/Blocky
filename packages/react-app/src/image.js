@@ -1,2 +1,2 @@
-import Player from "./assets/player.png";
-export { Player };
+import player from "./assets/player.png";
+export { player };
