@@ -249,9 +249,8 @@ function App(props) {
 
   const faucetAvailable = localProvider && localProvider.connection && targetNetwork.name.indexOf("local") !== -1;
 
-  // let adr = "bB74aFcB19C571ebA23b3C2C9c999Bd1Bda4057C";
-  // let addressFile = adr.toLowerCase();
-  // console.log(addressFile);
+  // let adr = "bb74afcb19c571eba23b3c2c9c999bd1bda4057c";
+  
   // async function run() {
   //   let upload = await Upload();
   //   console.log(upload);

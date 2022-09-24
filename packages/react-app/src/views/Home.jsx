@@ -1,10 +1,9 @@
 import { Container, Heading } from "@chakra-ui/react";
 import { useContractReader } from "eth-hooks";
 import { ethers } from "ethers";
-import { InputHandler, Player, Background } from "../components";
+import { InputHandler, Player, Background, FlyingEnemy, GroundEnemy, ClimbingEnemy } from "../components";
 import React from "react";
-import { layer1, layer2, layer3, layer4, layer5, player } from "../image";
-
+import { enemy_fly, enemy_plant, enemy_spider_big, layer1, layer2, layer3, layer4, layer5, player } from "../image";
 
 /**
  * web3 props can be passed from '../App.jsx' into your local view component for use
@@ -27,18 +26,39 @@ function Home({ yourLocalBalance, readContracts }) {
         this.width = width;
         this.height = height;
         this.groundMargin = 80;
-        this.speed = 3;
+        this.speed = 0;
+        this.maxSpeed = 3;
         this.background = new Background(this);
         this.player = new Player(this);
         this.input = new InputHandler();
+        this.enemies = [];
+        this.enemyTimer = 0;
+        this.enemyInterval = 1000;
       }
       update(deltaTime) {
         this.background.update();
         this.player.update(this.input.key, deltaTime);
+        // handle enemies
+        if (this.enemyTimer > this.enemyInterval) {
+          this.addEnemy();
+          this.enemyTimer = 0;
+        } else {
+          this.enemyTimer += deltaTime;
+        }
+        this.enemies.forEach(enemy => {
+          enemy.update(deltaTime);
+          if (enemy.markedForDeletion) enemies.splice
+        });
       }
       draw(context) {
         this.background.draw(context);
         this.player.draw(context);
+        this.enemies.forEach(enemy => {
+          enemy.draw(context);
+        })
+      }
+      addEnemy() {
+        this.enemies.push(new FlyingEnemy(this));
       }
     }
 
@@ -72,6 +92,9 @@ function Home({ yourLocalBalance, readContracts }) {
       <img style={{ display: "none" }} id="layer3" alt="layer3" src={layer3}></img>
       <img style={{ display: "none" }} id="layer4" alt="layer4" src={layer4}></img>
       <img style={{ display: "none" }} id="layer5" alt="layer5" src={layer5}></img>
+      <img style={{ display: "none" }} id="enemy_fly" alt="enemy_fly" src={enemy_fly}></img>
+      <img style={{ display: "none" }} id="enemy_plant" alt="enemy_plant" src={enemy_plant}></img>
+      <img style={{ display: "none" }} id="enemy_spider_big" alt="layer5" src={enemy_spider_big}></img>
     </Container>
   );
 }
