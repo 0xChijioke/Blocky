@@ -1,7 +1,7 @@
 import { Container, Heading } from "@chakra-ui/react";
 import { useContractReader } from "eth-hooks";
 import { ethers } from "ethers";
-import { InputHandler, Player, Background, FlyingEnemy, GroundEnemy, ClimbingEnemy } from "../components";
+import { InputHandler, Player, Background, FlyingEnemy, GroundEnemy, ClimbingEnemy, UI } from "../components";
 import React from "react";
 import { enemy_fly, enemy_plant, enemy_spider_big, layer1, layer2, layer3, layer4, layer5, player } from "../image";
 
@@ -31,10 +31,13 @@ function Home({ yourLocalBalance, readContracts }) {
         this.background = new Background(this);
         this.player = new Player(this);
         this.input = new InputHandler(this);
+        this.UI = new UI(this);
         this.enemies = [];
         this.enemyTimer = 0;
         this.enemyInterval = 1000;
         this.debug = true;
+        this.score = 0;
+        this.fontColor = "black";
       }
       update(deltaTime) {
         this.background.update();
@@ -57,6 +60,7 @@ function Home({ yourLocalBalance, readContracts }) {
         this.enemies.forEach(enemy => {
           enemy.draw(context);
         });
+        this.UI.draw(context);
       }
       addEnemy() {
         if (this.speed > 0 && Math.random() < 0.5) this.enemies.push(new GroundEnemy(this));

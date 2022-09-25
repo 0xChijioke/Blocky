@@ -18,3 +18,4 @@ export { getFiles } from "./GetFiles";
 export { Player } from "./Player";
 export { Background } from "./Background";
 export { FlyingEnemy, GroundEnemy, ClimbingEnemy } from "./Enemies";
+export { UI } from "./UI";
