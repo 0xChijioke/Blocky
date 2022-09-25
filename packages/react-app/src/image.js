@@ -8,5 +8,6 @@ import enemy_fly from "./assets/enemy_fly.png";
 import enemy_plant from "./assets/enemy_plant.png";
 import enemy_spider_big from "./assets/enemy_spider_big.png";
 import fire from "./assets/fire.png";
+import boom from "./assets/boom.png";
 
-export { player, layer1, layer2, layer3, layer4, layer5, enemy_fly, enemy_plant, enemy_spider_big, fire };
+export { player, layer1, layer2, layer3, layer4, layer5, enemy_fly, enemy_plant, enemy_spider_big, fire, boom };

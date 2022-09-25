@@ -4,6 +4,7 @@ import { ethers } from "ethers";
 import { InputHandler, Player, Background, FlyingEnemy, GroundEnemy, ClimbingEnemy, UI } from "../components";
 import React from "react";
 import {
+  boom,
   enemy_fly,
   enemy_plant,
   enemy_spider_big,
@@ -128,6 +129,7 @@ function Home({ yourLocalBalance, readContracts }) {
       <img style={{ display: "none" }} id="enemy_plant" alt="enemy_plant" src={enemy_plant}></img>
       <img style={{ display: "none" }} id="enemy_spider_big" alt="layer5" src={enemy_spider_big}></img>
       <img style={{ display: "none" }} id="fire" alt="fire" src={fire}></img>
+      <img style={{ display: "none" }} id="collisionAnimation" alt="fire" src={boom}></img>
     </Container>
   );
 }
