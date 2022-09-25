@@ -29,12 +29,7 @@ import externalContracts from "./contracts/external_contracts";
 // contracts
 import deployedContracts from "./contracts/hardhat_contracts.json";
 import { Transactor, Upload, Web3ModalSetup } from "./helpers";
-import {
-  Home,
-  //ExampleUI,
-  //Hints,
-  //Subgraph
-} from "./views";
+import { Home } from "./views";
 import { useStaticJsonRPC } from "./hooks";
 
 const { ethers } = require("ethers");
@@ -250,7 +245,7 @@ function App(props) {
   const faucetAvailable = localProvider && localProvider.connection && targetNetwork.name.indexOf("local") !== -1;
 
   // let adr = "bb74afcb19c571eba23b3c2c9c999bd1bda4057c";
-  
+
   // async function run() {
   //   let upload = await Upload();
   //   console.log(upload);
@@ -328,28 +323,9 @@ function App(props) {
             contractConfig={contractConfig}
           />
         </Route>
-        {/* <Route path="/hints">
-          <Hints
-            address={address}
-            yourLocalBalance={yourLocalBalance}
-            mainnetProvider={mainnetProvider}
-            price={price}
-          />
+        <Route path="/input">
+          <input type="file" id="files" onChange={e => Upload(e)}></input>
         </Route>
-        <Route path="/exampleui">
-          <ExampleUI
-            address={address}
-            userSigner={userSigner}
-            mainnetProvider={mainnetProvider}
-            localProvider={localProvider}
-            yourLocalBalance={yourLocalBalance}
-            price={price}
-            tx={tx}
-            writeContracts={writeContracts}
-            readContracts={readContracts}
-            purpose={purpose}
-          />
-        </Route> */}
         <Route path="/mainnetdai">
           <Contract
             name="DAI"
