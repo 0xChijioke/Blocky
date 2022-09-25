@@ -46,6 +46,7 @@ export class Player {
   }
   draw(context) {
     // context.fillRect(this.x, this.y, this.width, this.height);
+    if (this.game.debug) context.strokeRect(this.x, this.y, this.width, this.height);
     context.drawImage(
       this.image,
       this.frameX * this.width,
@@ -65,5 +66,12 @@ export class Player {
     this.currentState = this.states[state];
     this.currentState.enter();
     this.game.speed = this.game.maxSpeed * speed;
+  }
+  checkCollisions(){
+    this.game.enemies.forEach(enemy => {
+      if (
+        enemy.x < this.x + this.width &&
+        enemy.x + enemy.width > this.x &&)
+    });
   }
 }
