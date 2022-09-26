@@ -28,5 +28,5 @@ export default function Header({ link, title, subTitle, ...props }) {
 Header.defaultProps = {
   link: "https://github.com/EngrGord/Blocky",
   title: "BLOCKY",
-  subTitle: "Built with Skale & Scaffold-eth",
+  subTitle: "Built with Scaffold-eth",
 };

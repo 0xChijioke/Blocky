@@ -46,6 +46,7 @@ function Home({ yourLocalBalance, readContracts }) {
         this.UI = new UI(this);
         this.enemies = [];
         this.particles = [];
+        this.collisions = [];
         this.maxParticles = 50;
         this.enemyTimer = 0;
         this.enemyInterval = 1000;
@@ -69,6 +70,7 @@ function Home({ yourLocalBalance, readContracts }) {
           enemy.update(deltaTime);
           if (enemy.markedForDeletion) this.enemies.splice(this.enemies.indexOf(enemy), 1);
         });
+        // handle particles
         this.particles.forEach((particle, index) => {
           particle.update();
           if (particle.markedForDeletion) this.particles.splice(index, 1);
@@ -76,6 +78,11 @@ function Home({ yourLocalBalance, readContracts }) {
         if (this.particles.length > this.maxParticles) {
           this.particles = this.particles.slice(0, 50);
         }
+        // handle collision sprites
+        this.collisions.forEach((collision, index) => {
+          collision.update(deltaTime);
+          if (collision.markedForDeletion) this.collisions.splice(index, 1);
+        });
       }
       draw(context) {
         this.background.draw(context);
@@ -83,9 +90,12 @@ function Home({ yourLocalBalance, readContracts }) {
         this.enemies.forEach(enemy => {
           enemy.draw(context);
         });
-        this.particles.forEach(particle => {
-          particle.draw(context);
-        });
+        this.particles.forEach(particles => {
+          particles.draw(context);
+        })
+        this.collisions.forEach(collision => {
+          collision.draw(context);
+        })
         this.UI.draw(context);
       }
       addEnemy() {
@@ -129,7 +139,7 @@ function Home({ yourLocalBalance, readContracts }) {
       <img style={{ display: "none" }} id="enemy_plant" alt="enemy_plant" src={enemy_plant}></img>
       <img style={{ display: "none" }} id="enemy_spider_big" alt="layer5" src={enemy_spider_big}></img>
       <img style={{ display: "none" }} id="fire" alt="fire" src={fire}></img>
-      <img style={{ display: "none" }} id="collisionAnimation" alt="fire" src={boom}></img>
+      <img style={{ display: "none" }} id="boom" alt="boom" src={boom}></img>
     </Container>
   );
 }
