@@ -23,7 +23,6 @@ contract BlockGame is ERC721, ReentrancyGuard, Ownable {
 
 
     struct CharacterAttributes {
-        uint256 characterIndex;
         string name;
         string imageURI;
         uint256 hp;
@@ -52,10 +51,8 @@ contract BlockGame is ERC721, ReentrancyGuard, Ownable {
     SpecialAttackType[] allSpecialAttacks;
 
     struct MadBots {
-        string name;
         string imageURI;
         uint256 hp;
-        uint256 maxHp;
         uint256 attackDamage;
     }
 
@@ -69,25 +66,38 @@ contract BlockGame is ERC721, ReentrancyGuard, Ownable {
 
      event CharacterNFTMinted(
         address sender,
-        uint256 tokenId,
-        uint256 characterIndex
+        uint256 tokenId
     );
     event AttackComplete(uint256 newBotHp, uint256 newPlayerHp);
     event RegenCompleted(uint256 newHp);
 
 
-    constructor(address blockTokenAddress) ERC721("Hero", "HERO") {
+     constructor(
+        string memory characterName,
+        string memory characterImageURI,
+        uint256 characterMaxHp,
+        uint256[] memory characterAttacks,
+        string memory botImageURI,
+        uint256 botHp,
+        uint256 botAttackDamage,
+        address blockTokenAddress
+    ) ERC721("Heroes", "HERO") {
         blockToken = blockTokenAddress;
+            CharacterAttributes memory charAttribute;
+            charAttribute.name = characterName;
+            charAttribute.imageURI = characterImageURI;
+            charAttribute.hp = characterMaxHp;
+            charAttribute.maxHp = characterMaxHp;
+            charAttribute.attacks = characterAttacks;
+            defaultCharacters.push(charAttribute);
         
-        }
-        // _tokenIds.increment();
-        // madBots = MadBots({
-        //     name: botName,
-        //     imageURI: botImageURI,
-        //     hp: botHp,
-        //     maxHp: botHp,
-        //     attackDamage: botAttackDamage
-        // });
+        _tokenIds.increment();
+        madBots = MadBots({
+            imageURI: botImageURI,
+            hp: botHp,
+            attackDamage: botAttackDamage
+        });
+    }
     
 
 
@@ -131,11 +141,8 @@ contract BlockGame is ERC721, ReentrancyGuard, Ownable {
         }
     }
         
-     function mintCharacterNFT(uint256 _characterIndex) external payable {
-        require(
-            _characterIndex < defaultCharacters.length,
-            "Character index out of bounds"
-        );
+     function mintCharacterNFT() external payable {
+        
         require(
             IERC20(blockToken).allowance(msg.sender, address(this)) >= 10 ether,
             "Please approve the required token transfer before minting"
@@ -144,18 +151,17 @@ contract BlockGame is ERC721, ReentrancyGuard, Ownable {
         uint256 newItemId = _tokenIds.current();
         _safeMint(msg.sender, newItemId);
         nftHolderAttributes[newItemId] = CharacterAttributes({
-            characterIndex: _characterIndex,
-            name: defaultCharacters[_characterIndex].name,
-            imageURI: defaultCharacters[_characterIndex].imageURI,
-            hp: defaultCharacters[_characterIndex].hp,
-            maxHp: defaultCharacters[_characterIndex].maxHp,
-            attacks: defaultCharacters[_characterIndex].attacks,
-            specialAttacks: defaultCharacters[_characterIndex].specialAttacks,
+            name: defaultCharacters[0].name,
+            imageURI: defaultCharacters[0].imageURI,
+            hp: defaultCharacters[0].hp,
+            maxHp: defaultCharacters[0].maxHp,
+            attacks: defaultCharacters[0].attacks,
+            specialAttacks: defaultCharacters[0].specialAttacks,
             lastRegenTime: block.timestamp
         });
         nftHolders[msg.sender] = newItemId;
         _tokenIds.increment();
-        emit CharacterNFTMinted(msg.sender, newItemId, _characterIndex);
+        emit CharacterNFTMinted(msg.sender, newItemId);
     }
 
 

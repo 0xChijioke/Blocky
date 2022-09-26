@@ -1,7 +1,7 @@
 import { Container, Heading } from "@chakra-ui/react";
 import { useContractReader } from "eth-hooks";
 import { ethers } from "ethers";
-import { InputHandler, Player, Background, FlyingEnemy, GroundEnemy, ClimbingEnemy, UI } from "../components";
+import { InputHandler, Player, Background, FlyingEnemy, GroundEnemy, ClimbingEnemy, UI } from "../components/";
 import React from "react";
 import {
   boom,

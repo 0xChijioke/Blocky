@@ -17,24 +17,26 @@ module.exports = async ({ getNamedAccounts, deployments, getChainId }) => {
   const { deployer } = await getNamedAccounts();
   const chainId = await getChainId();
 
-
   const blockToken = await deploy("BlockToken", {
     from: deployer,
     args: ["BLOCK Token", "BLK"],
     log: true,
   });
 
- 
-
   const blockGame = await deploy("BlockGame", {
     from: deployer,
-    args: [blockToken.address],
+    args: [
+      "Blocky",
+      "https://eth-online.skalenodes.com/fs/hackathon-content-live-vega/bb74afcb19c571eba23b3c2c9c999bd1bda4057c/player.png",
+      100,
+      [],
+      "https://eth-online.skalenodes.com/fs/hackathon-content-live-vega/bb74afcb19c571eba23b3c2c9c999bd1bda4057c/enemy_fly.png",
+      30,
+      10,
+      blockToken.address,
+    ],
     log: true,
   });
-
-
-
- 
 
   // Getting a previously deployed contract
   // const BlockGame = await ethers.getContract("BlockGame", deployer);

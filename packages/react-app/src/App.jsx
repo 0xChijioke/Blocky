@@ -1,4 +1,4 @@
-import { Box, Button, Flex, Heading, HStack, Stack, VStack } from "@chakra-ui/react";
+import { Box, Button, Center, Container, Flex, Heading, HStack, Stack, VStack } from "@chakra-ui/react";
 import {
   useBalance,
   useContractLoader,
@@ -21,39 +21,33 @@ import {
   ThemeSwitch,
   //NetworkDisplay,
   FaucetHint,
-  getFiles,
   //NetworkSwitch,
 } from "./components";
-import { NETWORKS, ALCHEMY_KEY, ADDRESS } from "./constants";
+import { NETWORKS, ALCHEMY_KEY } from "./constants";
 import externalContracts from "./contracts/external_contracts";
 // contracts
 import deployedContracts from "./contracts/hardhat_contracts.json";
-import { Transactor, Upload, Web3ModalSetup } from "./helpers";
+import { Transactor, Web3ModalSetup } from "./helpers";
 import { Home } from "./views";
 import { useStaticJsonRPC } from "./hooks";
 
 const { ethers } = require("ethers");
 /*
     Welcome to 🏗 scaffold-eth !
-
     Code:
     https://github.com/scaffold-eth/scaffold-eth
-
     Support:
     https://t.me/joinchat/KByvmRe5wkR-8F_zz6AjpA
     or DM @austingriffith on twitter or telegram
-
     You should get your own Alchemy.com & Infura.io ID and put it in `constants.js`
     (this is your connection to the main Ethereum network for ENS etc.)
-
-
     🌏 EXTERNAL CONTRACTS:
     You can also bring in contract artifacts in `constants.js`
     (and then use the `useExternalContractLoader()` hook!)
 */
 
 /// 📡 What chain are your contracts deployed to?
-const initialNetwork = NETWORKS.localhost; // <------- select your target frontend network (localhost, rinkeby, xdai, mainnet)
+const initialNetwork = NETWORKS.loclhost; // <------- select your target frontend network (localhost, rinkeby, xdai, mainnet)
 
 // 😬 Sorry for all the console logging
 const DEBUG = true;
@@ -173,6 +167,42 @@ function App(props) {
   const addressFromENS = useResolveName(mainnetProvider, "austingriffith.eth");
   console.log("🏷 Resolved austingriffith.eth as:",addressFromENS)
   */
+
+  // keep track of a variable from the contract in the local React state:
+  const blockBalance = useContractReader(readContracts, "BlockToken", "balanceOf", [address]);
+  console.log("🤗 BlockToken balance:", blockBalance);
+
+  const blockyBalance = useContractReader(readContracts, "BlockGame", "balanceOf", [address]);
+  console.log("🤗 Blocky Character balance:", blockyBalance);
+
+  //
+  // 🧠 This effect will update yourCollectibles by polling when your balance changes
+  //
+
+  async function updateBlocky() {
+    const blockyUpdate = [];
+    let tokenIndex = 1;
+    try {
+      console.log("Getting token index", tokenIndex);
+      const tokenId = await readContracts.BlockGame.tokenOfOwnerByIndex(address, tokenIndex);
+      console.log("tokenId", tokenId);
+      console.log(readContracts.BlockGame.tokenURI(tokenId));
+      const tokenURI = await readContracts.BlockGame.tokenURI(tokenId);
+      console.log("tokenURI", tokenURI);
+      const jsonManifestString = atob(tokenURI.substring(29));
+      console.log("jsonManifestString", jsonManifestString);
+
+      try {
+        const jsonManifest = JSON.parse(jsonManifestString);
+        console.log("jsonManifest", jsonManifest);
+        blockyUpdate.push({ id: tokenId, uri: tokenURI, owner: address, ...jsonManifest });
+      } catch (e) {
+        console.log(e);
+      }
+    } catch (e) {
+      console.log(e);
+    }
+  }
 
   //
   // 🧫 DEBUG 👨🏻‍🔬
@@ -306,6 +336,25 @@ function App(props) {
             <Heading position={"absolute"} top={"50%"} w={"100%"} id="loading">
               LOADING...
             </Heading>
+            <Container>
+              <Flex w={"100%"} direction={"center"} m={0} p={0}>
+                {/* <Button
+                  onClick={async () => {
+                    tx(await writeContracts.BlockToken.faucet(address, 15));
+                  }}
+                >
+                  Faucet
+                </Button>
+                <Button
+                  onClick={async () => {
+                    tx(await writeContracts.BlockGame.mintCharacterNFT());
+                  }}
+                >
+                  MINT PLAYER
+                </Button> */}
+              </Flex>
+            </Container>
+
             <Home yourLocalBalance={yourLocalBalance} readContracts={readContracts} />
           </>
         </Route>
@@ -323,9 +372,9 @@ function App(props) {
             contractConfig={contractConfig}
           />
         </Route>
-        <Route path="/input">
+        {/* <Route path="/input">
           <input type="file" id="files" onChange={e => Upload(e)}></input>
-        </Route>
+        </Route> */}
         <Route path="/mainnetdai">
           <Contract
             name="DAI"

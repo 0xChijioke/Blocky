@@ -1,5 +1,5 @@
-import { player } from "../image";
-import { PRIVATE_KEY, ADDRESS } from "../constants";
+import { player } from "./image";
+import { PRIVATE_KEY, ADDRESS } from "./constants";
 import { useState } from "react";
 const Filestorage = require("@skalenetwork/filestorage.js");
 const Web3 = require("web3");

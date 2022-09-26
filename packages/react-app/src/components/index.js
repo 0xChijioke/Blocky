@@ -12,10 +12,10 @@ export { default as Header } from "./Header";
 export { default as Provider } from "./Provider";
 export { default as Ramp } from "./Ramp";
 export { default as ThemeSwitch } from "./ThemeSwitch";
-export { InputHandler } from "./InputHandler";
-export { default as FaucetHint } from "./FaucetHint";
-export { getFiles } from "./GetFiles";
-export { Player } from "./Player";
-export { Background } from "./Background";
-export { FlyingEnemy, GroundEnemy, ClimbingEnemy } from "./Enemies";
-export { UI } from "./UI";
+export { InputHandler } from "./game/InputHandler";
+export { default as FaucetHint } from "./FaucetHint"
+export { Player } from "./game/Player";
+export { Background } from "./game/Background";
+export { FlyingEnemy, GroundEnemy, ClimbingEnemy } from "./game/Enemies";
+export { Sitting, Running, Jumping, Falling, Rolling, Diving, Hit } from "./game/PlayerStates";
+export { UI } from "./game/UI";
