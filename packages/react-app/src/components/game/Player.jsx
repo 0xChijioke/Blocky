@@ -29,6 +29,7 @@ export class Player {
       new Diving(this.game),
       new Hit(this.game),
     ];
+    this.currentState = null;
   }
   update(input, deltaTime) {
     this.checkCollisions();
