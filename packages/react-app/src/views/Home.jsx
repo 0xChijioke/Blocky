@@ -30,7 +30,7 @@ function Home({ yourLocalBalance, readContracts }) {
     loading.style.display = "none";
     const canvas = document.getElementById("canvas1");
     const ctx = canvas.getContext("2d");
-    canvas.width = window.innerWidth - 10;
+    canvas.width = window.innerWidth - 60;
     canvas.height = 500;
 
     class Game {
@@ -50,13 +50,18 @@ function Home({ yourLocalBalance, readContracts }) {
         this.maxParticles = 50;
         this.enemyTimer = 0;
         this.enemyInterval = 1000;
-        this.debug = true;
+        this.debug = false;
         this.score = 0;
         this.fontColor = "black";
+        this.time = 0;
+        this.maxTime = 120000;
+        this.gameOver = false;
         this.player.currentState = this.player.states[0];
         this.player.currentState.enter();
       }
       update(deltaTime) {
+        this.time += deltaTime;
+        if (this.time > this.maxTime) this.gameOver = true;
         this.background.update();
         this.player.update(this.input.key, deltaTime);
         // handle enemies
@@ -76,7 +81,7 @@ function Home({ yourLocalBalance, readContracts }) {
           if (particle.markedForDeletion) this.particles.splice(index, 1);
         });
         if (this.particles.length > this.maxParticles) {
-          this.particles = this.particles.slice(0, 50);
+          this.particles.length = this.maxParticles;
         }
         // handle collision sprites
         this.collisions.forEach((collision, index) => {
@@ -114,7 +119,7 @@ function Home({ yourLocalBalance, readContracts }) {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       game.update(deltaTime);
       game.draw(ctx);
-      requestAnimationFrame(animate);
+      if (!game.gameOver) requestAnimationFrame(animate);
     }
     animate(0);
   });
