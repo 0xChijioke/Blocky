@@ -1,5 +1,6 @@
 import { Sitting, Running, Jumping, Falling, Rolling, Diving, Hit } from "./PlayerStates";
 import { CollisionAnimation } from "./CollisionAnimation";
+import { FloatingMessages } from "./FloatingMessages";
 
 export class Player {
   constructor(game) {
@@ -92,8 +93,11 @@ export class Player {
         );
         if (this.currentState === this.states[4] || this.currentState === this.states[5]) {
           this.game.score++;
+          this.game.floatingMessages.push(new FloatingMessages("+1", enemy.x, enemy.y, 0, 0));
         } else {
           this.setState(6, 0);
+          this.game.lives--;
+          if (this.game.lives <= 0) this.game.gameOver = true;
         }
       }
     });

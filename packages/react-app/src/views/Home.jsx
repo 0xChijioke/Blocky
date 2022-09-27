@@ -14,6 +14,7 @@ import {
   layer3,
   layer4,
   layer5,
+  lives,
   player,
 } from "../image";
 
@@ -47,6 +48,7 @@ function Home({ yourLocalBalance, readContracts }) {
         this.enemies = [];
         this.particles = [];
         this.collisions = [];
+        this.floatingMessages = [];
         this.maxParticles = 50;
         this.enemyTimer = 0;
         this.enemyInterval = 1000;
@@ -56,6 +58,7 @@ function Home({ yourLocalBalance, readContracts }) {
         this.time = 0;
         this.maxTime = 120000;
         this.gameOver = false;
+        this.lives = 5;
         this.player.currentState = this.player.states[0];
         this.player.currentState.enter();
       }
@@ -73,12 +76,14 @@ function Home({ yourLocalBalance, readContracts }) {
         }
         this.enemies.forEach(enemy => {
           enemy.update(deltaTime);
-          if (enemy.markedForDeletion) this.enemies.splice(this.enemies.indexOf(enemy), 1);
+        });
+        // handle message
+        this.floatingMessages.forEach(message => {
+          message.update();
         });
         // handle particles
         this.particles.forEach((particle, index) => {
           particle.update();
-          if (particle.markedForDeletion) this.particles.splice(index, 1);
         });
         if (this.particles.length > this.maxParticles) {
           this.particles.length = this.maxParticles;
@@ -86,8 +91,11 @@ function Home({ yourLocalBalance, readContracts }) {
         // handle collision sprites
         this.collisions.forEach((collision, index) => {
           collision.update(deltaTime);
-          if (collision.markedForDeletion) this.collisions.splice(index, 1);
         });
+        this.collisions = this.collisions.filter(collision => !collision.markedForDeletion);
+        this.particles = this.particles.filter(particle => !particle.markedForDeletion);
+        this.enemies = this.enemies.filter(enemy => !enemy.markedForDeletion);
+        this.floatingMessages = this.floatingMessages.filter(message => !message.markedForDeletion);
       }
       draw(context) {
         this.background.draw(context);
@@ -101,6 +109,9 @@ function Home({ yourLocalBalance, readContracts }) {
         this.collisions.forEach(collision => {
           collision.draw(context);
         })
+        this.floatingMessages.forEach(message => {
+          message.draw(context);
+        });
         this.UI.draw(context);
       }
       addEnemy() {
@@ -132,6 +143,7 @@ function Home({ yourLocalBalance, readContracts }) {
           border: "5px solid black",
           margin: 0,
           padding: 0,
+          fontFamily: "'Caveat', cursive",
         }}
       ></canvas>
       <img style={{ display: "none" }} id="player" alt="player" src={player}></img>
@@ -145,6 +157,7 @@ function Home({ yourLocalBalance, readContracts }) {
       <img style={{ display: "none" }} id="enemy_spider_big" alt="layer5" src={enemy_spider_big}></img>
       <img style={{ display: "none" }} id="fire" alt="fire" src={fire}></img>
       <img style={{ display: "none" }} id="boom" alt="boom" src={boom}></img>
+      <img style={{ display: "none" }} id="lives" alt="lives" src={lives}></img>
     </Container>
   );
 }
