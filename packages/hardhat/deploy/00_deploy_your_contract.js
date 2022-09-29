@@ -27,10 +27,10 @@ module.exports = async ({ getNamedAccounts, deployments, getChainId }) => {
     from: deployer,
     args: [
       "Blocky",
-      "https://eth-online.skalenodes.com/fs/hackathon-content-live-vega/bb74afcb19c571eba23b3c2c9c999bd1bda4057c/player.png",
+      "https://etqo7j73bctk33egrtmhlze6uv5bchmglwlobln6wpdpshfpg4ua.arweave.net/JODvp_sIpq3shozYdeSepXoRHYZdluCtvrPG-RyvNyg",
       100,
       [],
-      "https://eth-online.skalenodes.com/fs/hackathon-content-live-vega/bb74afcb19c571eba23b3c2c9c999bd1bda4057c/enemy_fly.png",
+      "https://qawh3gci4htuivxhsvc63f4rd33zrk6xiesdhmbjgklebsa5n2pq.arweave.net/gCx9mEjh50RW55VF7ZeRHveYq9dBJDOwKTKWQMgdbp8",
       30,
       10,
       blockToken.address,
