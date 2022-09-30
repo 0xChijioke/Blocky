@@ -9,20 +9,9 @@ import {
 } from "eth-hooks";
 import { useExchangeEthPrice } from "eth-hooks/dapps/dex";
 import React, { useCallback, useEffect, useState } from "react";
-import { Link, Route, Switch, useLocation } from "react-router-dom";
+import { Route, Switch, useLocation } from "react-router-dom";
 import "./App.css";
-import {
-  Account,
-  Contract,
-  Faucet,
-  GasGauge,
-  Header,
-  Ramp,
-  ThemeSwitch,
-  //NetworkDisplay,
-  FaucetHint,
-  //NetworkSwitch,
-} from "./components";
+import { Account, Contract, Faucet, GasGauge, Header, Ramp, ThemeSwitch, FaucetHint } from "./components";
 import { NETWORKS, ALCHEMY_KEY } from "./constants";
 import externalContracts from "./contracts/external_contracts";
 // contracts
@@ -30,6 +19,7 @@ import deployedContracts from "./contracts/hardhat_contracts.json";
 import { Transactor, Web3ModalSetup } from "./helpers";
 import { Home } from "./views";
 import { useStaticJsonRPC } from "./hooks";
+import { useEventListener } from "eth-hooks/events/useEventListener";
 
 const { ethers } = require("ethers");
 /*
@@ -274,17 +264,7 @@ function App(props) {
 
   const faucetAvailable = localProvider && localProvider.connection && targetNetwork.name.indexOf("local") !== -1;
 
-  // let adr = "bb74afcb19c571eba23b3c2c9c999bd1bda4057c";
-
-  // async function run() {
-  //   let upload = await Upload();
-  //   console.log(upload);
-  //   // let result = await getFiles(
-  //   //   `https://eth-online.skalenodes.com/v1/hackathon-content-live-vega/${addressFile}/Player.png`,
-  //   // );
-  //   // console.log("result: " + result);
-  // }
-  // run();
+  
 
   return (
     <div className="App">
@@ -338,7 +318,7 @@ function App(props) {
             </Heading>
             <Container>
               <Flex w={"100%"} direction={"center"} m={0} p={0}>
-                {/* <Button
+                <Button
                   onClick={async () => {
                     tx(await writeContracts.BlockToken.faucet(address, 15));
                   }}
@@ -351,7 +331,7 @@ function App(props) {
                   }}
                 >
                   MINT PLAYER
-                </Button> */}
+                </Button>
               </Flex>
             </Container>
 
