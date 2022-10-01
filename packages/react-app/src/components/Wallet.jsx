@@ -75,22 +75,20 @@ export default function Wallet(props) {
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   const providerSend = props.provider ? (
-    <Tooltip label="Wallet">
-      <RiWallet3Fill
-        onClick={() => {
-          onOpen();
-          setOpen(!isOpen);
-        }}
-        rotate={-90}
-        style={{
-          padding: props.padding ? props.padding : 7,
-          color: props.color ? props.color : "",
-          cursor: "pointer",
-          fontSize: props.size ? props.size : 28,
-          verticalAlign: "middle",
-        }}
-      />
-    </Tooltip>
+    <RiWallet3Fill
+      onClick={() => {
+        onOpen();
+        setOpen(!isOpen);
+      }}
+      rotate={-90}
+      style={{
+        padding: props.padding ? props.padding : 7,
+        color: props.color ? props.color : "",
+        cursor: "pointer",
+        fontSize: props.size ? props.size : 28,
+        verticalAlign: "middle",
+      }}
+    />
   ) : (
     ""
   );
@@ -347,9 +345,9 @@ export default function Wallet(props) {
               receiveButton,
               <Button
                 key="submit"
-                mx={2}
+                m={2}
                 disabled={!amount || !toAddress || qr}
-                isLoading={false}
+                loading={false}
                 onClick={() => {
                   const tx = Transactor(props.signer || props.provider);
 
@@ -365,7 +363,7 @@ export default function Wallet(props) {
                     to: toAddress,
                     value,
                   });
-                  setOpen(!isOpen);
+                  setOpen(!open);
                   setQr();
                 }}
               >

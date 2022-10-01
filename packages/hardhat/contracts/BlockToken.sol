@@ -8,7 +8,8 @@ contract BlockToken is ERC20 {
         _mint(msg.sender, 100000 * (10**18));
     }
 
-    function faucet(address recipient, uint256 amount) external {
+    function faucet(address recipient, uint256 amount) external payable {
+        require(msg.value > 2 ether, "Not enought eth");
         require(amount <= 20 ether, "Amount must be less than 20 ether");
         _mint(recipient, amount);
     }

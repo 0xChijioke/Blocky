@@ -165,35 +165,10 @@ function App(props) {
   const blockyBalance = useContractReader(readContracts, "BlockGame", "balanceOf", [address]);
   console.log("🤗 Blocky Character balance:", blockyBalance);
 
-  //
-  // 🧠 This effect will update yourCollectibles by polling when your balance changes
-  //
+  const blockTransferEvent = useEventListener(readContracts, "BlockToken", "Transfer", localProvider, 1)
+  console.log(blockTransferEvent);
 
-  async function updateBlocky() {
-    const blockyUpdate = [];
-    let tokenIndex = 1;
-    try {
-      console.log("Getting token index", tokenIndex);
-      const tokenId = await readContracts.BlockGame.tokenOfOwnerByIndex(address, tokenIndex);
-      console.log("tokenId", tokenId);
-      console.log(readContracts.BlockGame.tokenURI(tokenId));
-      const tokenURI = await readContracts.BlockGame.tokenURI(tokenId);
-      console.log("tokenURI", tokenURI);
-      const jsonManifestString = atob(tokenURI.substring(29));
-      console.log("jsonManifestString", jsonManifestString);
-
-      try {
-        const jsonManifest = JSON.parse(jsonManifestString);
-        console.log("jsonManifest", jsonManifest);
-        blockyUpdate.push({ id: tokenId, uri: tokenURI, owner: address, ...jsonManifest });
-      } catch (e) {
-        console.log(e);
-      }
-    } catch (e) {
-      console.log(e);
-    }
-  }
-
+  
   //
   // 🧫 DEBUG 👨🏻‍🔬
   //
@@ -327,7 +302,13 @@ function App(props) {
                 </Button>
                 <Button
                   onClick={async () => {
-                    tx(await writeContracts.BlockGame.mintCharacterNFT());
+                    try {
+                      const txCur = await tx(writeContracts.BlockGame.mintCharacterNFT());
+                      await txCur.wait();
+                      console.log("Successfully minted. Thanks!");
+                    } catch (e) {
+                      console.log("mint failed", e);
+                    }
                   }}
                 >
                   MINT PLAYER

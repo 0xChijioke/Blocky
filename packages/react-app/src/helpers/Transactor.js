@@ -12,7 +12,7 @@ const callbacks = {};
 const DEBUG = true;
 
 export default function Transactor(providerOrSigner, gasPrice, etherscan) {
-  const toast = useToast();
+  // const toast = useToast();
   if (typeof providerOrSigner !== "undefined") {
     // eslint-disable-next-line consistent-return
     return async (tx, callback) => {
@@ -89,11 +89,11 @@ export default function Transactor(providerOrSigner, gasPrice, etherscan) {
             };
           });
         } else {
-          toast({
-            title: "Local Transaction Sent",
-            description: result.hash,
-            placement: "bottomRight",
-          });
+          // toast({
+          //   title: "Local Transaction Sent",
+          //   description: result.hash,
+          //   placement: "bottomRight",
+          // });
           // on most networks BlockNative will update a transaction handler,
           // but locally we will set an interval to listen...
           if (callback) {
@@ -142,11 +142,11 @@ export default function Transactor(providerOrSigner, gasPrice, etherscan) {
           //ignore
         }
 
-        toast({
-          title: "Transaction Error",
-          description: message,
-          status: "error",
-        });
+        // toast({
+        //   title: "Transaction Error",
+        //   description: message,
+        //   status: "error",
+        // });
         if (callback && typeof callback === "function") {
           callback(e);
         }
