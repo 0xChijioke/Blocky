@@ -1,4 +1,17 @@
-import { Box, Button, Center, Container, Flex, Heading, HStack, Stack, VStack } from "@chakra-ui/react";
+import {
+  Box,
+  Button,
+  Center,
+  Container,
+  Flex,
+  Heading,
+  HStack,
+  List,
+  ListItem,
+  Stack,
+  Text,
+  VStack,
+} from "@chakra-ui/react";
 import {
   useBalance,
   useContractLoader,
@@ -11,7 +24,18 @@ import { useExchangeEthPrice } from "eth-hooks/dapps/dex";
 import React, { useCallback, useEffect, useState } from "react";
 import { Route, Switch, useLocation } from "react-router-dom";
 import "./App.css";
-import { Account, Contract, Faucet, GasGauge, Header, Ramp, ThemeSwitch, FaucetHint } from "./components";
+import {
+  Account,
+  Contract,
+  Faucet,
+  GasGauge,
+  Header,
+  Ramp,
+  ThemeSwitch,
+  FaucetHint,
+  Address,
+  Balance,
+} from "./components";
 import { NETWORKS, ALCHEMY_KEY } from "./constants";
 import externalContracts from "./contracts/external_contracts";
 // contracts
@@ -165,10 +189,12 @@ function App(props) {
   const blockyBalance = useContractReader(readContracts, "BlockGame", "balanceOf", [address]);
   console.log("🤗 Blocky Character balance:", blockyBalance);
 
-  const blockTransferEvent = useEventListener(readContracts, "BlockToken", "Transfer", localProvider, 1)
+  const blockTransferEvent = useEventListener(readContracts, "BlockToken", "Transfer", localProvider, 1);
   console.log(blockTransferEvent);
 
-  
+  const character = useContractReader(readContracts, "BlockGame", "checkIfUserHasNFT");
+  console.log(character)
+
   //
   // 🧫 DEBUG 👨🏻‍🔬
   //
@@ -239,7 +265,12 @@ function App(props) {
 
   const faucetAvailable = localProvider && localProvider.connection && targetNetwork.name.indexOf("local") !== -1;
 
-  
+  console.log(writeContracts.BlockGame);
+const [characterSprite, setCaracterSprite] = useState();
+
+
+
+
 
   return (
     <div className="App">
@@ -287,37 +318,59 @@ function App(props) {
       <Switch>
         <Route exact path="/">
           {/* pass in any web3 props to this Home component. For example, yourLocalBalance */}
-          <>
-            <Heading position={"absolute"} top={"50%"} w={"100%"} id="loading">
-              LOADING...
-            </Heading>
-            <Container>
-              <Flex w={"100%"} direction={"center"} m={0} p={0}>
-                <Button
-                  onClick={async () => {
-                    tx(await writeContracts.BlockToken.faucet(address, 15));
-                  }}
-                >
-                  Faucet
-                </Button>
-                <Button
-                  onClick={async () => {
-                    try {
-                      const txCur = await tx(writeContracts.BlockGame.mintCharacterNFT());
-                      await txCur.wait();
-                      console.log("Successfully minted. Thanks!");
-                    } catch (e) {
-                      console.log("mint failed", e);
-                    }
-                  }}
-                >
-                  MINT PLAYER
-                </Button>
-              </Flex>
-            </Container>
+          {writeContracts && (
+            <>
+              {/* <Heading position={"absolute"} top={"50%"} w={"100%"} id="loading">
+                LOADING...
+              </Heading> */}
+              <Container mt={100}>
+                <Flex w={"100%"} direction={"column"} m={0} mt={10} p={0}>
+                  <Text>Grab some tokens from the faucet and Mint your player to start game!</Text>
+                  <Button
+                    m={"auto"}
+                    mb={3}
+                    onClick={async () => {
+                      tx(await writeContracts.BlockToken.faucet(address, 15));
+                    }}
+                  >
+                    Faucet
+                  </Button>
+                  <Button
+                    m={"auto"}
+                    onClick={async () => {
+                      try {
+                        await tx(writeContracts.BlockGame.mintCharacterNFT());
+                        console.log("Successfully minted. Thanks!");
+                      } catch (e) {
+                        console.log("mint failed", e);
+                      }
+                    }}
+                  >
+                    MINT PLAYER
+                  </Button>
+                </Flex>
+                <Box>
+                  {blockBalance &&
+                    blockTransferEvent.map(item => {
+                      <List>
+                        <ListItem key={item.blockNumber}>
+                          <Address value={item.args[0]} ensProvider={localProvider} fontSize={16} />
+                          <Balance tokenOutput={item.args[1]} />
+                          <Balance ethInput={item.args[2]} />
+                        </ListItem>
+                      </List>;
+                    })}
+                </Box>
+                <Box>
+                  <Flex></Flex>
+                </Box>
+              </Container>
+            </>
+          )}
+        </Route>
 
-            <Home yourLocalBalance={yourLocalBalance} readContracts={readContracts} />
-          </>
+        <Route exact path={"/game"}>
+          {blockBalance > 0 && <Home yourLocalBalance={yourLocalBalance} readContracts={readContracts} />}
         </Route>
 
         <Route exact path="/debug">

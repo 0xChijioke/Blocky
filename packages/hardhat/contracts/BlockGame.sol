@@ -143,11 +143,11 @@ contract BlockGame is ERC721, ReentrancyGuard, Ownable {
         
      function mintCharacterNFT() external payable {
         
-        require(
-            IERC20(blockToken).allowance(msg.sender, address(this)) >= 10 ether,
-            "Please approve the required token transfer before minting"
-        );
-        IERC20(blockToken).transferFrom(msg.sender, address(this), 10 ether);
+        // require(
+        //     IERC20(blockToken).allowance(msg.sender, address(this)) >= 10 ether,
+        //     "Please approve the required token transfer before minting"
+        // );
+        // IERC20(blockToken).transferFrom(msg.sender, address(this), 10 ether);
         uint256 newItemId = _tokenIds.current();
         _safeMint(msg.sender, newItemId);
         nftHolderAttributes[newItemId] = CharacterAttributes({
@@ -279,6 +279,7 @@ contract BlockGame is ERC721, ReentrancyGuard, Ownable {
     {
         return allSpecialAttacks;
     }
+
 
     function getMadBots() public view returns (MadBots memory) {
         return madBots;
