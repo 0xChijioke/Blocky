@@ -21,6 +21,7 @@ import {
   useUserProviderAndSigner,
 } from "eth-hooks";
 import { useExchangeEthPrice } from "eth-hooks/dapps/dex";
+import { useTokenBalance } from "eth-hooks/erc/erc-20/useTokenBalance";
 import React, { useCallback, useEffect, useState } from "react";
 import { Route, Switch, useLocation } from "react-router-dom";
 import "./App.css";
@@ -182,58 +183,45 @@ function App(props) {
   console.log("🏷 Resolved austingriffith.eth as:",addressFromENS)
   */
 
-  // keep track of a variable from the contract in the local React state:
-  const blockBalance = useContractReader(readContracts, "BlockToken", "balanceOf", [address]);
-  console.log("🤗 BlockToken balance:", blockBalance);
-
-  const blockyBalance = useContractReader(readContracts, "BlockGame", "balanceOf", [address]);
-  console.log("🤗 Blocky Character balance:", blockyBalance);
-
-  const blockTransferEvent = useEventListener(readContracts, "BlockToken", "Transfer", localProvider, 1);
-  console.log(blockTransferEvent);
-
-  const character = useContractReader(readContracts, "BlockGame", "checkIfUserHasNFT");
-  console.log(character)
-
   //
   // 🧫 DEBUG 👨🏻‍🔬
   //
-  useEffect(() => {
-    if (
-      DEBUG &&
-      mainnetProvider &&
-      address &&
-      selectedChainId &&
-      yourLocalBalance &&
-      yourMainnetBalance &&
-      readContracts &&
-      writeContracts &&
-      mainnetContracts
-    ) {
-      console.log("_____________________________________ 🏗 scaffold-eth _____________________________________");
-      console.log("🌎 mainnetProvider", mainnetProvider);
-      console.log("🏠 localChainId", localChainId);
-      console.log("👩‍💼 selected address:", address);
-      console.log("🕵🏻‍♂️ selectedChainId:", selectedChainId);
-      console.log("💵 yourLocalBalance", yourLocalBalance ? ethers.utils.formatEther(yourLocalBalance) : "...");
-      console.log("💵 yourMainnetBalance", yourMainnetBalance ? ethers.utils.formatEther(yourMainnetBalance) : "...");
-      console.log("📝 readContracts", readContracts);
-      console.log("🌍 DAI contract on mainnet:", mainnetContracts);
-      console.log("💵 yourMainnetDAIBalance", myMainnetDAIBalance);
-      console.log("🔐 writeContracts", writeContracts);
-    }
-  }, [
-    mainnetProvider,
-    address,
-    selectedChainId,
-    yourLocalBalance,
-    yourMainnetBalance,
-    readContracts,
-    writeContracts,
-    mainnetContracts,
-    localChainId,
-    myMainnetDAIBalance,
-  ]);
+  // useEffect(() => {
+  //   if (
+  //     DEBUG &&
+  //     mainnetProvider &&
+  //     address &&
+  //     selectedChainId &&
+  //     yourLocalBalance &&
+  //     yourMainnetBalance &&
+  //     readContracts &&
+  //     writeContracts &&
+  //     mainnetContracts
+  //   ) {
+  //     console.log("_____________________________________ 🏗 scaffold-eth _____________________________________");
+  //     console.log("🌎 mainnetProvider", mainnetProvider);
+  //     console.log("🏠 localChainId", localChainId);
+  //     console.log("👩‍💼 selected address:", address);
+  //     console.log("🕵🏻‍♂️ selectedChainId:", selectedChainId);
+  //     console.log("💵 yourLocalBalance", yourLocalBalance ? ethers.utils.formatEther(yourLocalBalance) : "...");
+  //     console.log("💵 yourMainnetBalance", yourMainnetBalance ? ethers.utils.formatEther(yourMainnetBalance) : "...");
+  //     console.log("📝 readContracts", readContracts);
+  //     console.log("🌍 DAI contract on mainnet:", mainnetContracts);
+  //     console.log("💵 yourMainnetDAIBalance", myMainnetDAIBalance);
+  //     console.log("🔐 writeContracts", writeContracts);
+  //   }
+  // }, [
+  //   mainnetProvider,
+  //   address,
+  //   selectedChainId,
+  //   yourLocalBalance,
+  //   yourMainnetBalance,
+  //   readContracts,
+  //   writeContracts,
+  //   mainnetContracts,
+  //   localChainId,
+  //   myMainnetDAIBalance,
+  // ]);
 
   const loadWeb3Modal = useCallback(async () => {
     const provider = await web3Modal.connect();
@@ -265,12 +253,37 @@ function App(props) {
 
   const faucetAvailable = localProvider && localProvider.connection && targetNetwork.name.indexOf("local") !== -1;
 
-  console.log(writeContracts.BlockGame);
-const [characterSprite, setCaracterSprite] = useState();
+  const [characterSprite, setCaracterSprite] = useState();
 
+  //const tokenAddress = readContracts.BlockToken.address;
 
+  // const contractAddress = readContracts[contractName].address;
 
+  // const tokenBalance = useTokenBalance(readContracts[tokenName], contractAddress, localProvider);
+  // const tokenBalanceFloat = parseFloat(ethers.utils.formatEther(tokenBalance));
+  // console.log(tokenBalanceFloat)
 
+  // keep track of a variable from the contract in the local React state:
+
+  const blockBalance = useContractReader(readContracts, "BlockToken", "balanceOf", [address]);
+  console.log("🤗 BlockToken balance:", blockBalance);
+  const playerBalance = parseInt(Number(blockBalance));
+  const blockBal = blockBalance ? parseFloat(ethers.utils.formatEther(blockBalance)) : "...";
+
+  const blockyBalance = useContractReader(readContracts, "BlockGame", "balanceOf", [address]);
+  console.log("🤗 Blocky Character balance:", blockyBalance);
+
+  const blockTransferEvent = useEventListener(readContracts, "BlockToken", "Transfer", localProvider, 1);
+
+  if (blockTransferEvent.length > 0) {
+    for (let i = 0; i < blockTransferEvent.length; i++) {}
+  }
+
+  const arrayT = blockTransferEvent[1] ? blockTransferEvent[1].args : 0;
+  console.log(parseInt(Number(arrayT.value)));
+
+  const character = useContractReader(readContracts, "BlockGame", "checkIfUserHasNFT");
+  console.log(character);
 
   return (
     <div className="App">
@@ -323,14 +336,18 @@ const [characterSprite, setCaracterSprite] = useState();
               {/* <Heading position={"absolute"} top={"50%"} w={"100%"} id="loading">
                 LOADING...
               </Heading> */}
-              <Container mt={100}>
+              <Container mt={100} align={"center"}>
+                <Text>
+                  Your block token balance is{" "}
+                  <span style={{ color: "green", fontWeight: "bold" }}>{playerBalance}</span> BK
+                </Text>
                 <Flex w={"100%"} direction={"column"} m={0} mt={10} p={0}>
                   <Text>Grab some tokens from the faucet and Mint your player to start game!</Text>
                   <Button
                     m={"auto"}
                     mb={3}
                     onClick={async () => {
-                      tx(await writeContracts.BlockToken.faucet(address, 15));
+                      tx(await writeContracts.BlockToken.faucet(address, 21));
                     }}
                   >
                     Faucet
@@ -348,19 +365,20 @@ const [characterSprite, setCaracterSprite] = useState();
                   >
                     MINT PLAYER
                   </Button>
+                  <List>
+                    {blockTransferEvent.length >= 0 &&
+                      blockTransferEvent.map(item => {
+                        <ListItem>
+                          <Flex>
+                            <Address value={item.args[0]} ensProvider={localProvider} fontSize={16} />
+                            <Balance tokenOutput={item.args[1]} />
+                            <Balance ethInput={item.args[2]} />
+                          </Flex>
+                        </ListItem>;
+                      })}
+                  </List>
                 </Flex>
-                <Box>
-                  {blockBalance &&
-                    blockTransferEvent.map(item => {
-                      <List>
-                        <ListItem key={item.blockNumber}>
-                          <Address value={item.args[0]} ensProvider={localProvider} fontSize={16} />
-                          <Balance tokenOutput={item.args[1]} />
-                          <Balance ethInput={item.args[2]} />
-                        </ListItem>
-                      </List>;
-                    })}
-                </Box>
+                <Box></Box>
                 <Box>
                   <Flex></Flex>
                 </Box>

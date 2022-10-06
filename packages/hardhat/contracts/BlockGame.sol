@@ -360,36 +360,4 @@ contract BlockGame is ERC721, ReentrancyGuard, Ownable {
         return output;
     }
 
-
-   
-
-
-
-    
-    /********************
-    Utility Stuff Starts
-    *********************/
-
-    function getRandomNumber() public view returns (uint )
-    {
-        bytes32 res = getRandom();
-        uint256 num = uint256(res);
-        return num;
-    }
-
-    function getRandom() private view returns (bytes32 addr) {
-        assembly {
-            let freemem := mload(0x40)
-            let start_addr := add(freemem, 0)
-            if iszero(staticcall(gas(), 0x18, 0, 0, start_addr, 32)) {
-                invalid()
-            }
-            addr := mload(freemem)
-        }
-    }
-
-
-    /********************
-    Utility Stuff Ends
-    *********************/
 }
