@@ -267,23 +267,23 @@ function App(props) {
 
   const blockBalance = useContractReader(readContracts, "BlockToken", "balanceOf", [address]);
   console.log("🤗 BlockToken balance:", blockBalance);
-  const playerBalance = parseInt(Number(blockBalance));
+  
+  const playerBalance = isNaN(blockBalance) ? "..." : parseInt(Number(blockBalance));
   const blockBal = blockBalance ? parseFloat(ethers.utils.formatEther(blockBalance)) : "...";
+  //console.log(ethers.utils.formatEther(Number(blockBal)));
 
   const blockyBalance = useContractReader(readContracts, "BlockGame", "balanceOf", [address]);
   console.log("🤗 Blocky Character balance:", blockyBalance);
 
   const blockTransferEvent = useEventListener(readContracts, "BlockToken", "Transfer", localProvider, 1);
 
-  if (blockTransferEvent.length > 0) {
-    for (let i = 0; i < blockTransferEvent.length; i++) {}
-  }
-
   const arrayT = blockTransferEvent[1] ? blockTransferEvent[1].args : 0;
   console.log(parseInt(Number(arrayT.value)));
 
   const character = useContractReader(readContracts, "BlockGame", "checkIfUserHasNFT");
   console.log(character);
+  const getCharacters = useContractReader(readContracts, "BlockGame", "getAllDefaultCharacters");
+  console.log(getCharacters);
 
   return (
     <div className="App">

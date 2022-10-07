@@ -24,33 +24,16 @@ contract BlockGame is ERC721, ReentrancyGuard, Ownable {
 
     struct CharacterAttributes {
         string name;
+        uint256 characterIndex;
         string imageURI;
         uint256 hp;
         uint256 maxHp;
-        uint256[] attacks;
-        uint256[] specialAttacks;
         uint256 lastRegenTime;
     }
 
-    struct AttackType {
-        uint256 attackIndex;
-        string attackName;
-        uint256 attackDamage;
-        string attackImage;
-    }
-
-    struct SpecialAttackType {
-        uint256 price;
-        uint256 specialAttackIndex;
-        string specialAttackName;
-        uint256 specialAttackDamage;
-        string specialAttackImage;
-    }
-
-    AttackType[] allAttacks;
-    SpecialAttackType[] allSpecialAttacks;
 
     struct MadBots {
+        string name;
         string imageURI;
         uint256 hp;
         uint256 attackDamage;
@@ -73,72 +56,48 @@ contract BlockGame is ERC721, ReentrancyGuard, Ownable {
 
 
      constructor(
-        string memory characterName,
-        string memory characterImageURI,
-        uint256 characterMaxHp,
-        uint256[] memory characterAttacks,
-        string memory botImageURI,
-        uint256 botHp,
-        uint256 botAttackDamage,
+        // All the characters attributes
+        string[] memory characterName,
+        string[] memory characterImageURI,
+        uint256[] memory characterMaxHp,
+        // All the boss attributes
+        string memory bossName,
+        string memory bossImageURI,
+        uint256 bossHp,
+        uint256 madbotsAttackDamage,
         address blockTokenAddress
-    ) ERC721("Heroes", "HERO") {
+    ) ERC721("Hero", "HERO") {
         blockToken = blockTokenAddress;
+        for (uint256 i = 0; i < characterName.length; i++) {
             CharacterAttributes memory charAttribute;
-            charAttribute.name = characterName;
-            charAttribute.imageURI = characterImageURI;
-            charAttribute.hp = characterMaxHp;
-            charAttribute.maxHp = characterMaxHp;
-            charAttribute.attacks = characterAttacks;
+            charAttribute.characterIndex = i;
+            charAttribute.name = characterName[i];
+            charAttribute.imageURI = characterImageURI[i];
+            charAttribute.hp = characterMaxHp[i];
+            charAttribute.maxHp = characterMaxHp[i];
+
             defaultCharacters.push(charAttribute);
-        
+            CharacterAttributes memory c = defaultCharacters[i];
+            console.log(
+                "Done initializing %s w/ HP %s, img %s",
+                c.name,
+                c.hp,
+                c.imageURI
+            );
+        }
         _tokenIds.increment();
         madBots = MadBots({
-            imageURI: botImageURI,
-            hp: botHp,
-            attackDamage: botAttackDamage
+            name: bossName,
+            imageURI: bossImageURI,
+            hp: bossHp,
+            attackDamage: madbotsAttackDamage
         });
-    }
-    
-
-
-        function addAttacks(
-        // All the attacks for each character
-        string[] memory attackNames,
-        string[] memory attackImages,
-        uint256[] memory attackDamages,
-        uint256[] memory attackIndexes
-    ) public onlyOwner {
-        for (uint256 j = 0; j < attackIndexes.length; j++) {
-            allAttacks.push(
-                AttackType(
-                    attackIndexes[j],
-                    attackNames[j],
-                    attackDamages[j],
-                    attackImages[j]
-                )
-            );
-        }
-    }
-
-    function addSpecialAttacks(
-        // All the special attacks for each character
-        string[] memory specialAttackNames,
-        string[] memory specialAttackImages,
-        uint256[] memory specialAttackDamages,
-        uint256[] memory specialAttackPrices,
-        uint256[] memory specialAttackIndexes
-    ) public onlyOwner {
-        for (uint256 j = 0; j < specialAttackIndexes.length; j++) {
-            allSpecialAttacks.push(
-                SpecialAttackType(
-                    specialAttackPrices[j],
-                    specialAttackIndexes[j],
-                    specialAttackNames[j],
-                    specialAttackDamages[j],
-                    specialAttackImages[j]
-                )
-            );
-        }
+        console.log(
+            "Done initializing boss %s w/ HP %s, img %s",
+            madBots.name,
+            madBots.hp,
+            madBots.imageURI
+        );
     }
         
      function mintCharacterNFT() external payable {
@@ -152,16 +111,19 @@ contract BlockGame is ERC721, ReentrancyGuard, Ownable {
         _safeMint(msg.sender, newItemId);
         nftHolderAttributes[newItemId] = CharacterAttributes({
             name: defaultCharacters[0].name,
+            characterIndex: defaultCharacters[0].characterIndex,
             imageURI: defaultCharacters[0].imageURI,
             hp: defaultCharacters[0].hp,
             maxHp: defaultCharacters[0].maxHp,
-            attacks: defaultCharacters[0].attacks,
-            specialAttacks: defaultCharacters[0].specialAttacks,
             lastRegenTime: block.timestamp
         });
         nftHolders[msg.sender] = newItemId;
         _tokenIds.increment();
         emit CharacterNFTMinted(msg.sender, newItemId);
+         console.log(
+            nftHolders[msg.sender],
+            newItemId
+        );
     }
 
 
@@ -193,7 +155,7 @@ contract BlockGame is ERC721, ReentrancyGuard, Ownable {
         }
     }
 
-    function attackBot(uint256 attackIndex) public {
+    function attackBot() public {
         uint256 nftTokenIdOfPlayer = nftHolders[msg.sender];
         CharacterAttributes storage player = nftHolderAttributes[
             nftTokenIdOfPlayer
@@ -201,12 +163,7 @@ contract BlockGame is ERC721, ReentrancyGuard, Ownable {
         require(player.hp > 0, "Error: character must have HP to attack bots.");
         require(madBots.hp > 0, "Error: bot is already dead");
         uint256 attackDamage = 0;
-        for (uint256 i = 0; i < player.attacks.length; i++) {
-            if (attackIndex == player.attacks[i]) {
-                attackDamage = allAttacks[attackIndex].attackDamage;
-            }
-        }
-        require(attackDamage > 0, "Error: attack must have damage.");
+       
         if (madBots.hp < attackDamage) {
             madBots.hp = 0;
         } else {
@@ -220,31 +177,6 @@ contract BlockGame is ERC721, ReentrancyGuard, Ownable {
         }
         emit AttackComplete(madBots.hp, player.hp);
     }
-
-    function buySpecialAttack(uint256 specialAttackIndex) public payable {
-        uint256 nftTokenIdOfPlayer = nftHolders[msg.sender];
-        require(
-            nftTokenIdOfPlayer > 0,
-            "Error: must have NFT to buy special attack."
-        );
-
-        CharacterAttributes storage player = nftHolderAttributes[
-            nftTokenIdOfPlayer
-        ];
-        require(
-            IERC20(blockToken).allowance(msg.sender, address(this)) >=
-                allSpecialAttacks[specialAttackIndex].price,
-            "Error: user must provide enough token to buy special attack."
-        );
-        IERC20(blockToken).transferFrom(
-            msg.sender,
-            address(this),
-            allSpecialAttacks[specialAttackIndex].price
-        );
-        player.specialAttacks.push(specialAttackIndex);
-        emit AttackComplete(madBots.hp, player.hp);
-    }
-
 
     function checkIfUserHasNFT()
         public
@@ -268,18 +200,6 @@ contract BlockGame is ERC721, ReentrancyGuard, Ownable {
         return defaultCharacters;
     }
 
-    function getAllAttacks() public view returns (AttackType[] memory) {
-        return allAttacks;
-    }
-
-    function getAllSpecialAttacks()
-        public
-        view
-        returns (SpecialAttackType[] memory)
-    {
-        return allSpecialAttacks;
-    }
-
 
     function getMadBots() public view returns (MadBots memory) {
         return madBots;
@@ -298,38 +218,7 @@ contract BlockGame is ERC721, ReentrancyGuard, Ownable {
         string memory strHp = Strings.toString(charAttributes.hp);
         string memory strMaxHp = Strings.toString(charAttributes.maxHp);
 
-        string memory specialAttacksStr = "";
-        string memory attacksStr = "";
 
-        for (uint256 i = 0; i < charAttributes.specialAttacks.length; i++) {
-            uint256 index = charAttributes.specialAttacks[i];
-            specialAttacksStr = string(
-                abi.encodePacked(
-                    specialAttacksStr,
-                    ', {"trait_type": "Special Attack - ',
-                    allSpecialAttacks[index].specialAttackName,
-                    '", "value": ',
-                    Strings.toString(
-                        allSpecialAttacks[index].specialAttackDamage
-                    ),
-                    '"}'
-                )
-            );
-        }
-
-        for (uint256 i = 0; i < charAttributes.attacks.length; i++) {
-            uint256 index = charAttributes.attacks[i];
-            attacksStr = string(
-                abi.encodePacked(
-                    attacksStr,
-                    ', {"trait_type": "',
-                    allAttacks[index].attackName,
-                    '", "value": ',
-                    Strings.toString(allAttacks[index].attackDamage),
-                    "}"
-                )
-            );
-        }
 
         string memory json = Base64.encode(
             bytes(
@@ -346,8 +235,6 @@ contract BlockGame is ERC721, ReentrancyGuard, Ownable {
                         ', "max_value": ',
                         strMaxHp,
                         "}",
-                        specialAttacksStr,
-                        attacksStr,
                         "]}"
                     )
                 )
