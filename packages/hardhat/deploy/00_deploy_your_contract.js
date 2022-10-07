@@ -26,10 +26,10 @@ module.exports = async ({ getNamedAccounts, deployments, getChainId }) => {
   const blockGame = await deploy("BlockGame", {
     from: deployer,
     args: [
-      "Blocky",
-      "https://etqo7j73bctk33egrtmhlze6uv5bchmglwlobln6wpdpshfpg4ua.arweave.net/JODvp_sIpq3shozYdeSepXoRHYZdluCtvrPG-RyvNyg",
-      100,
-      [],
+      ["Blocky",],
+      ["https://etqo7j73bctk33egrtmhlze6uv5bchmglwlobln6wpdpshfpg4ua.arweave.net/JODvp_sIpq3shozYdeSepXoRHYZdluCtvrPG-RyvNyg",],
+      [100,],
+      "NPC",
       "https://qawh3gci4htuivxhsvc63f4rd33zrk6xiesdhmbjgklebsa5n2pq.arweave.net/gCx9mEjh50RW55VF7ZeRHveYq9dBJDOwKTKWQMgdbp8",
       30,
       10,
